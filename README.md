@@ -41,4 +41,7 @@ db文件只是用来查找相应的别名(但是里面仍有很多数据可以�
 - 篇章级相似度分为几种方法：简单的词embedding加和，或者逐句最大词加和，等等（可以写一个类）
 - 古文本分词说实话直接调用thulac分词效果不太好，甚至embedding也根本没有语义信息，
 - 解决方案：1.GuwenBert 把模型看懂，前几层应该有embedding生成（猜测的因为bert可以生成w2v,也可以fine-tuing）
-           2.其他的适用于古文,唐诗的模型
+# 项目延展
+- 对应风格的唐诗生成（训练集应该得需要额外找，属于nlp项目了），https://github.com/jinfagang/tensorflow_poems https://github.com/DevinZ1993/Chinese-Poetry-Generation
+- 唐诗风格聚类
+- 其余NLP类似问题，诗词分类？诗词分词优化？诗词情感分析？（数据呢？）
