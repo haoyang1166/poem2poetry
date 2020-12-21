@@ -28,9 +28,9 @@ pip3 install gensim
 - 运行`python3 construct_poets_network.py`来构建社交网络，并将运行结果存储在save目录。
 - 运行`python3 visualize_poets_network.py`来构建出显示社交网络的网页，并将结果存储在html目录。
 # 开发逻辑
-db文件只是用来查找相应的别名：
-运行construct_poets_network.py或者word_level_analyzer.py
-save是中间文件,不放心可以自己生成，加了进度条。
+db文件只是用来查找相应的别名(但是里面仍有很多数据可以挖掘)
+-运行construct_poets_network.py或者word_level_analyzer.py
+-save是中间文件,不放心可以自己生成，加了进度条。
 
 # TODO list
 - 构建关系网前端的修改
