@@ -22,8 +22,21 @@ def read_qts(file_name):
       qts_list.append((author, title, validated_poem))
 
   return qts_list, authors_set
+def read_qts_byauthor(file_name,author_name):
+  poem_potery = []
 
+  # 逐行读取诗歌
+  with open(file_name, 'r', encoding='utf-8') as f:
+    for line in f:
+      text_segs = line.split()
+      title = text_segs[1]
+      author = text_segs[2]
+      poem = text_segs[-1]
 
+      if author==author_name:
+        poem_potery.append(poem)
+
+  return poem_potery
 # 从CBDB中获取诗人们的别名
 def get_alter_names_from_CBDB(db_file, authors_set, manual_defuzzy_authors_id):
   tang_begin_year = 618  # 唐朝建立年份
@@ -96,3 +109,8 @@ def get_alter_names_from_CBDB(db_file, authors_set, manual_defuzzy_authors_id):
   authors_filtered_by_CBDB = authors_set - authors_not_in_CBDB - fuzzy_authors
 
   return alter_names_dict, authors_filtered_by_CBDB
+
+def main():
+  print(read_qts_byauthor("data/qts_zhs.txt","白居易"))
+if __name__ == '__main__':
+  main()
