@@ -88,7 +88,7 @@ def word2vec(words_file):
         model = Word2Vec.load(vector_file)
     else:
         print('calculating word vectors...')
-        model = Word2Vec(LineSentence(words_file), size=400, window=3, min_count=10)
+        model = Word2Vec(LineSentence(words_file), size=100, window=3, min_count=100)
         # workers=multiprocessing.cpu_count())
         # 将计算结果存储起来，下次就不用重新计算了
         model.save(vector_file)
@@ -96,29 +96,29 @@ def word2vec(words_file):
     return model
 
 
-def document2vec(author_poetryfile, model, author):
-    vector_global = np.array([0] * 400, dtype="float64")
-    with open(author_poetryfile, 'r', encoding='utf-8') as fin:
-        # text = fin.read()
-        # print(text)
-        i = 0
-        for line in fin:
-            text = line.split('\t')
-            vector = np.array([0] * 400, dtype="float64")
-            if text[0] == author:
-                word = text[1].split(" ")
-                i = i + 1
-                for words in word:
-                    if words in model.wv.vocab:
-                        vector += np.array(model[words])
-                vector = vector / len(word)
-                vector_global = vector_global + vector
-            else:
-                continue
-
-        vector_global = vector_global / i
-
-    return vector_global
+# def document2vec(author_poetryfile, model, author):
+#     vector_global = np.array([0] * 400, dtype="float64")
+#     with open(author_poetryfile, 'r', encoding='utf-8') as fin:
+#         # text = fin.read()
+#         # print(text)
+#         i = 0
+#         for line in fin:
+#             text = line.split('\t')
+#             vector = np.array([0] * 400, dtype="float64")
+#             if text[0] == author:
+#                 word = text[1].split(" ")
+#                 i = i + 1
+#                 for words in word:
+#                     if words in model.wv.vocab:
+#                         vector += np.array(model[words])
+#                 vector = vector / len(word)
+#                 vector_global = vector_global + vector
+#             else:
+#                 continue
+#
+#         vector_global = vector_global / i
+#
+#     return vector_global
 
 
 def print_stat_results(char_counter, author_counter, genre_counter, vector_model):
@@ -179,12 +179,43 @@ def print_stat_results(char_counter, author_counter, genre_counter, vector_model
     print_similar_words('寂寞')
 
 
-def print_similar_poetry(author1, author2, model):
-    x=document2vec("save/ats_words_list.txt", model, author1)
-    y=document2vec("save/ats_words_list.txt", model, author2)
-    num = x.dot(y.T)
-    denom = np.linalg.norm(x) * np.linalg.norm(y)
-    return num / denom
+class Predict_similarity():
+    def __init__(self, model, ats_path):
+        self.model = model
+        self.ats_path = ats_path
+
+    def document2vec(self, author):
+        vector_global = np.array([0] * 100, dtype="float64")
+        with open(self.ats_path, 'r', encoding='utf-8') as fin:
+            # text = fin.read()
+            # print(text)
+            i = 0
+            for line in fin:
+                text = line.split('\t')
+                vector = np.array([0] * 100, dtype="float64")
+                if text[0] == author:
+                    word = text[1].split(" ")
+                    i = i + 1
+                    for words in word:
+                        if words in self.model.wv.vocab:
+                            vector += np.array(self.model[words])
+                    vector = vector / len(word)
+                    vector_global = vector_global + vector
+                else:
+                    continue
+
+            vector_global = vector_global / i
+
+        return vector_global
+
+    def print_similar_poetry(self, author1, author2):
+        x = self.document2vec(author=author1)*10
+        y = self.document2vec(author=author2)*10
+        print(x)
+        print(y)
+        num = x.dot(y.T)
+        denom = np.linalg.norm(x) * np.linalg.norm(y)
+        return num / denom
 
 
 def main():
@@ -193,6 +224,8 @@ def main():
                         help='fihle path of Quan Tangsi')
     parser.add_argument('--words_path', type=str, default='save/qts_words_list.txt',
                         help='file path to save Quan Tangshi words data')
+    parser.add_argument('--ats_path', type=str, default='save/ats_words_list.txt',
+                        help='file path to save Quan Tangshi words and author data')
     args = parser.parse_args()
 
     # 检查存储目录是否存在
@@ -202,8 +235,10 @@ def main():
 
     char_counter, author_counter, genre_counter = cut_qts_to_words(args.qts_path, args.words_path)
     vector_model = word2vec(args.words_path)
-    # print(document2vec("save/ats_words_list.txt", vector_model, "李世民"))
-    print(print_similar_poetry("白居易","李白",vector_model))
+
+    predict_similarity_model = Predict_similarity(vector_model, args.ats_path)
+    s = predict_similarity_model.print_similar_poetry("白居易", "李白")
+    print(s)
 
     print_stat_results(char_counter, author_counter, genre_counter, vector_model)
 
