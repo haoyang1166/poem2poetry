@@ -30,9 +30,9 @@ pip3 install gensim
 - 运行`python3 visualize_poets_network.py`来构建出显示社交网络的网页，并将结果存储在html目录。
 # 开发逻辑
 db文件只是用来查找相应的别名(但是里面仍有很多数据可以挖掘)
--运行construct_poets_network.py或者word_level_analyzer.py
--save是中间文件,不放心可以自己生成，加了进度条。
--experiment文件夹是实验结果文件夹
+- 运行construct_poets_network.py或者word_level_analyzer.py
+- save是中间文件,不放心可以自己生成，加了进度条。
+- experiment文件夹是实验结果文件夹
 # TODO list
 - ~~构建关系网前端的修改~~
 - ~~展示某些诗人的逻辑，原来是展示早唐，晚唐和全唐的这种拆分，可以改逻辑：查询某个人物的关系~~
