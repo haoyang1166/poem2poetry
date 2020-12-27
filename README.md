@@ -1,4 +1,4 @@
-# 唐诗诗人社交网络分析与唐诗篇章语义相似度计算与唐诗文本挖掘的一些东西
+# 唐诗诗人社交网络分析与唐诗篇章语义相似度计算与唐诗文本挖掘与诗人地理位置挖掘与诗人主题分析的一些东西
 原理：
 - [当我们在读唐诗时，我们在读什么？](https://mp.weixin.qq.com/s?__biz=MzI0NTUxMjgyOA==&mid=2247483724&idx=1&sn=9fe912aaaa2757eec2634a95931e1c6a&chksm=e94c2e5fde3ba749e4e364644d6b68d004b295a6864606c79f710b4b0e7e5d07ac3e89481012&mpshare=1&scene=1&srcid=0314cTnPXrmiKE1tR18sIV5m&pass_ticket=LmF1XSUkX6AZUuMnsPEO3vBZgEqfwt9frF%2F%2FATtYfAWYcIhzbawA0%2FclwgYNC1u%2F#rd)
 - [计算机告诉你，唐朝诗人之间的关系到底是什么样的？](https://mp.weixin.qq.com/s?__biz=MzI0NTUxMjgyOA==&mid=2247483750&idx=1&sn=dd883b547a3fc4343a3dcce1abea3719&chksm=e94c2e75de3ba7631ffd7abff8a89ea56fda63b2f3d3bb81fd845ef5fd3e9207b41230900288&mpshare=1&scene=1&srcid=0314HdoeYueFNse6H7j18qfx&pass_ticket=P5NYT1vI3xq6gboRVFuq64N9z2Yp0ADF4pMH3nRnXAhGuoM7eROG8O2lhVg%2BIvoR#rd)
