@@ -1,4 +1,7 @@
 # CBDB太大了，不加入repo
 data/cbdb_sqlite.db
-
+# 主题模型中间文件暂时不生成
+topicmodel/*
+# ltp_data不加入
+ltp_data/*
 .idea/*

@@ -4,7 +4,7 @@ import pickle
 import os
 import argparse
 from utils import read_qts_byauthor
-# import multiprocessing
+import multiprocessing
 from gensim.models import Word2Vec
 from gensim.models.word2vec import LineSentence
 from tqdm import tqdm
@@ -88,8 +88,9 @@ def word2vec(words_file):
         model = Word2Vec.load(vector_file)
     else:
         print('calculating word vectors...')
-        model = Word2Vec(LineSentence(words_file), size=100, window=3, min_count=100)
-        # workers=multiprocessing.cpu_count())
+        model = Word2Vec(LineSentence(words_file), size=50, window=10, min_count=10,
+                         workers=multiprocessing.cpu_count())
+
         # 将计算结果存储起来，下次就不用重新计算了
         model.save(vector_file)
 
@@ -194,6 +195,9 @@ class Predict_similarity():
                 text = line.split('\t')
                 vector = np.array([0] * 100, dtype="float64")
                 if text[0] == author:
+                    text[1] = text[1].replace("，", "")
+                    text[1] = text[1].replace("。", "")
+                    text[1] = text[1].replace("\n", "")
                     word = text[1].split(" ")
                     i = i + 1
                     for words in word:
@@ -208,9 +212,73 @@ class Predict_similarity():
 
         return vector_global
 
+    # 每个诗人所有的东西加起来真的就很相似
+    def document2vecbymaxpooling(self, author):
+        vector_global = np.array([0] * 50, dtype="float64")
+        with open(self.ats_path, "r", encoding="utf-8") as fin:
+            i = 0
+            for line in fin:
+                text = line.split('\t')
+                vector = np.array([[0] * 50], dtype="float64")
+                if text[0] == author:
+                    text[1] = text[1].replace("，", "")
+                    text[1] = text[1].replace("。", "")
+                    text[1] = text[1].replace("\n", "")
+                    word = text[1].split(" ")
+                    i = i + 1
+                    for words in word:
+                        if words in self.model.wv.vocab:
+                            vector = np.insert(vector, 0, values=self.model[words], axis=0)
+
+                    vector = np.max(vector, axis=0)
+                    vector_global = vector_global + vector
+
+        return vector_global / i
+
+    def doc2vec(self):
+        with open(self.ats_path, "r", encoding="utf-8") as fin:
+            globalvec = []
+            cnt = 1
+            author = None
+            for line in fin:
+
+                text = line.split('\t')
+                vector = np.array([[0] * 50], dtype="float64")
+                if (author == text[0]):
+                    cnt += 1
+                else:
+                    cnt = 1
+                text[1] = text[1].replace("，", "")
+                text[1] = text[1].replace("。", "")
+                text[1] = text[1].replace("\n", "")
+                word = text[1].split(" ")
+
+                for words in word:
+                    if words in self.model.wv.vocab:
+                        vector = np.insert(vector, 0, values=self.model[words], axis=0)
+
+                vector = np.max(vector, axis=0)
+
+                globalvec.append((text[0], cnt, vector))
+                author = text[0]
+                print(globalvec)
+
+        return globalvec
+    def clusting(self):
+
+        return
     def print_similar_poetry(self, author1, author2):
-        x = self.document2vec(author=author1)*10
-        y = self.document2vec(author=author2)*10
+        x = self.document2vec(author=author1)
+        y = self.document2vec(author=author2)
+        print(x)
+        print(y)
+        num = x.dot(y.T)
+        denom = np.linalg.norm(x) * np.linalg.norm(y)
+        return num / denom
+
+    def print_similar_poetrybymax(self, author1, author2):
+        x = self.document2vecbymaxpooling(author=author1)
+        y = self.document2vecbymaxpooling(author=author2)
         print(x)
         print(y)
         num = x.dot(y.T)
@@ -237,7 +305,9 @@ def main():
     vector_model = word2vec(args.words_path)
 
     predict_similarity_model = Predict_similarity(vector_model, args.ats_path)
-    s = predict_similarity_model.print_similar_poetry("白居易", "李白")
+    predict_similarity_model.doc2vec()
+
+    s = predict_similarity_model.print_similar_poetrybymax("李世民", "李白")
     print(s)
 
     print_stat_results(char_counter, author_counter, genre_counter, vector_model)
