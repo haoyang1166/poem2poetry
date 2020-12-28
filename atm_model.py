@@ -2,6 +2,7 @@ import logging
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 from gensim.models import AuthorTopicModel
+from sklearn.cluster import KMeans
 from gensim import corpora
 from sklearn.manifold import TSNE
 
@@ -40,7 +41,7 @@ class AuthorMining:
             else:
                 author2doc[author].append(index)
 
-            doc = line.split('\t')[1].replace("，","").replace("。","").split(' ')
+            doc = line.split('\t')[1].replace("，", "").replace("。", "").split(' ')
             docs.append(doc)
             index += 1
         print(len(docs))
@@ -59,10 +60,10 @@ class AuthorMining:
         model = AuthorTopicModel.load('topicmodel/author_topic.model')
         # 每个作者的向量，每个作者向量维度不一样，对应的主题不一样，主题分别是概率。
         author_vecs = [model.get_author_topics(author) for author in model.id2author.values()]
-        print(len(author_vecs)) #2610个诗人，每个诗人有几个主题（<100）,之后对应的概率
+        print(len(author_vecs))  # 2610个诗人，每个诗人有几个主题（<100）,之后对应的概率
         for author in author_vecs:
             print(author, len(author))  # 每个作者身上的主题个数不同
-        #介绍每位作者
+        # 介绍每位作者
         authors = model.id2author.values()
         print(len(authors), authors)
         # 显示某位作者的向量
@@ -73,26 +74,35 @@ class AuthorMining:
 
     '''对作者进行聚类分析'''
 
-    def author_cluster(self):
+    def tsne_clusting(self):
         model = AuthorTopicModel.load('topicmodel/author_topic.model')
         tsne = TSNE(n_components=2, random_state=0)
-        smallest_author = 200
+        smallest_author = 200  # 想看最少写作数量多少的诗人
         authors = [model.author2id[a] for a in model.author2id.keys() if len(model.author2doc[a]) >= smallest_author]
         print(authors)
         embeddings = tsne.fit_transform(model.state.gamma[authors, :])
-        print(embeddings)
-        authors = list(model.id2author.values())
-        # print(authors)
-        labels = ['李世民', '李白', '白居易', '武则天', '白居易', '杜甫', '刘禹锡', '武元衡', '权德舆']#对应的需要查找某几个诗人的方法
-        author_ids = [model.author2id[author] for author in labels]
-        print(author_ids)
-        author_embs = tsne.fit_transform([embeddings[i] for i in author_ids])
-        print(author_embs)
-        print(authors, author_ids, author_embs)
-        self.plot_with_labels(embeddings, authors)#在这里该以下对应诗人的
+        # print(model.state.gamma[authors, :])
+        # print(embeddings)
+        authors_list = [model.id2author[k] for k in authors]
 
+        print(authors_list)
+
+        # plt.scatter(embeddings[:, 0], embeddings[:, 1], c=y_predict)
         #
+        # plt.show()
+
+        # labels = ['李世民', '李白', '白居易', '武则天', '白居易', '杜甫', '刘禹锡', '武元衡', '权德舆']#对应的需要查找某几个诗人的方法
+        # author_ids = [model.author2id[author] for author in labels]
+        # print(author_ids)
+        # author_embs = tsne.fit_transform([embeddings[i] for i in author_ids])
+        # print(author_embs)
+        # print(authors, author_ids, author_embs)
+
+        self.plot_with_labels(embeddings, authors_list)  # 在这里该以下对应诗人的
+
         # plot_only = 150
+        # embeddings = model.state.gamma[authors, :plot_only]
+        #
         # low_dim_embs = tsne.fit_transform(embeddings[:plot_only, :])
         # labels = [authors[i] for i in range(plot_only)]
         # self.plot_with_labels(low_dim_embs, labels)
@@ -103,10 +113,33 @@ class AuthorMining:
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
         plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
         plt.figure(figsize=(18, 18))  # in inches
-        for i, label in enumerate(labels):
+        kmeans = KMeans(n_clusters=3, random_state=10)
+        kmeans.fit(low_dim_embs)
+        y_predict = kmeans.predict(low_dim_embs)
+        color_list=[]
+        for y in y_predict:
+            if y ==0:
+                color ="r"
+            elif y==1:
+                color="b"
+            elif y==2:
+                color="g"
+            color_list.append(color)
+
+        # plt.scatter(low_dim_embs[:, 0], low_dim_embs[:, 1], c=y_predict)
+        # plt.annotate(labels,
+        #              xy=(low_dim_embs[:, 0], low_dim_embs[:, 1]),
+        #              xytext=(5, 2),
+        #              textcoords='offset points',
+        #              ha='right',
+        #              va='bottom')
+        # plt.show()
+
+        for i, (label, y_p) in enumerate(zip(labels, color_list)):
             # print(labels)
             x, y = low_dim_embs[i, :]
-            plt.scatter(x, y)
+            plt.scatter(x, y, c=y_p)
+            # print(y_p)
             plt.annotate(label,
                          xy=(x, y),
                          xytext=(5, 2),
@@ -119,9 +152,10 @@ class AuthorMining:
 
 def main():
     handler = AuthorMining("save/ats_words_list.txt")
-    handler.atm_model()
+    # handler.atm_model()
     # handler.test_model()
-    handler.author_cluster()
+    handler.tsne_clusting()
+    # handler.test_model()
 
 
 if __name__ == '__main__':
