@@ -50,7 +50,7 @@ class AuthorMining:
         # 对文本进行向量化
         corpus = [dictionary.doc2bow(doc) for doc in docs]
         # 使用atm模型进行训练
-        model = AuthorTopicModel(corpus, author2doc=author2doc, id2word=dictionary, num_topics=20)
+        model = AuthorTopicModel(corpus, author2doc=author2doc, id2word=dictionary, num_topics=100)
         # 保存模型
         model.save('topicmodel/author_topic.model')
 

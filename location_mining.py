@@ -259,7 +259,7 @@ class PoetWalk:
         return
 
 def main():
-    name = '刘禹锡'
+    name = '白居易'
     handler = PoetWalk()
     handler.mining_main(name)
 

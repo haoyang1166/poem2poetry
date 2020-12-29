@@ -3,5 +3,12 @@ data/cbdb_sqlite.db
 # 主题模型中间文件暂时不生成
 topicmodel/*
 # ltp_data不加入
-ltp_data/*
+ltp_data/cws.model
+ltp_data/md5.txt
+ltp_data/ner.model
+ltp_data/parser.model
+ltp_data/pisrl.model
+ltp_data/pos.model
+ltp_data/version
+# idea相关文件不加入
 .idea/*

@@ -1,0 +1,89 @@
+
+              <!DOCTYPE HTML>
+               <html>
+                   <head>
+                       <meta charset="utf-8"><link rel="icon" href="https://static.jianshukeji.com/highcharts/images/favicon.ico">
+                       <meta name="viewport" content="width=device-width, initial-scale=1">
+                       <script src="https://img.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+                       <script src="https://img.hcharts.cn/highmaps/highmaps.js"></script>
+                       <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+                   </head>
+                   <body>
+                       <div id="container" style=" height: 1000px"></div>
+                       <script src="https://data.jianshukeji.com/geochina/china.js"></script>
+                       <script>
+                           var data = [
+                                   {name:'大荔县', lat:34.79566, lon:109.94217},
+{name:'黄牛峡', lat:25.096769, lon:110.421066},
+{name:'淮安区', lat:33.503060, lon:119.141080},
+{name:'徐州市', lat:34.20820856, lon:117.2786162},
+{name:'新郑市', lat:34.396050, lon:113.741610},
+{name:'钱塘湖', lat:29.659322, lon:115.698435},
+{name:'阊门', lat:31.315091, lon:120.605559},
+{name:'杭州市', lat:30.27415, lon:120.15515},
+{name:'重庆市', lat:29.291965, lon:108.170255},
+{name:'西湖', lat:30.224781, lon:120.12438},
+{name:'忠州', lat:30.295086, lon:108.028609},
+{name:'周至县', lat:34.163400, lon:108.222130},
+{name:'新竹市', lat:24.784924, lon:120.990745},
+{name:'洛阳香山寺', lat:34.554554, lon:112.479992},
+{name:'西安市', lat:34.34127, lon:108.93984},
+{name:'宿州市', lat:33.64774112, lon:116.9590005},
+{name:'洛阳市', lat:34.6190627, lon:112.4471901},
+{name:'徐州彭城县', lat:33.906602, lon:117.974836},
+{name:'九江市', lat:29.705480, lon:116.001460},
+{name:'重庆市', lat:29.56471, lon:106.55073},
+{name:'金阳县', lat:27.696540, lon:103.249030},
+{name:'河南省', lat:34.765710, lon:113.753220},
+{name:'庐山香炉峰', lat:29.472602, lon:115.965001},
+{name:'三游洞', lat:30.765204, lon:111.266636},
+{name:'河北省', lat:38.035990, lon:114.469790},
+{name:'冯翊县', lat:34.783352, lon:109.91584},
+{name:'苏州市', lat:31.29834, lon:120.58319},
+{name:'河津市', lat:35.59643, lon:110.71186},
+{name:'扬州市', lat:32.39358, lon:119.41269},
+{name:'洛阳香山', lat:34.577579, lon:112.538014},
+
+                                   ];
+
+                           var map = new Highcharts.Map('container', {
+                               title: {
+                                   text: '白居易足迹地图'
+                               },
+                               mapNavigation: {
+                                   enabled: true,
+                                   buttonOptions: {
+                                       verticalAlign: 'bottom'
+                                   }
+                               },
+                               tooltip: {
+                                   useHTML: true,
+                                   formatter: function() {
+                                       return this.point.name;
+                                   }
+                               },
+                               plotOptions: {
+                                   series: {
+                                       dataLabels: {
+                                           enabled: true
+                                       },
+                                       marker: {
+                                           radius: 3
+                                       }
+                                   }
+                               },
+                               series: [{
+                                   // 空数据列，用于展示底图
+                                   mapData: Highcharts.maps['cn/china'],
+                                   showInLegend: false
+                               },{
+                                   type: 'mappoint',
+                                   name: '白居易足迹地图',
+                                   data: data
+                               }]
+                           });
+                       <!--});-->
+                       </script>
+                   </body>
+               </html>
+               

@@ -305,9 +305,9 @@ def main():
     vector_model = word2vec(args.words_path)
 
     predict_similarity_model = Predict_similarity(vector_model, args.ats_path)
-    predict_similarity_model.doc2vec()
+    # predict_similarity_model.doc2vec()
 
-    s = predict_similarity_model.print_similar_poetrybymax("李世民", "李白")
+    s = predict_similarity_model.print_similar_poetrybymax("白居易", "刘禹锡")
     print(s)
 
     print_stat_results(char_counter, author_counter, genre_counter, vector_model)
